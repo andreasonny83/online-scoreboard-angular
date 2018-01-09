@@ -10,9 +10,5 @@ RUN mkdir -p $HOME
 WORKDIR $HOME
 
 # Install app dependencies
-COPY package.json $HOME
+COPY package*.json $HOME/
 RUN npm install
-
-EXPOSE 3000
-
-CMD [ "npm", "start" ]

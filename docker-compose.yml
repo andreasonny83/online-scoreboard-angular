@@ -7,8 +7,11 @@ services:
       context: ./server
       dockerfile: Dockerfile
     container_name: online-scoreboard-server
+    command: npm start
     ports:
       - "3000:3000"
+    expose:
+      - "3000"
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
@@ -18,8 +21,11 @@ services:
       context: ./client
       dockerfile: Dockerfile
     container_name: online-scoreboard-client
+    command: npm start
     ports:
       - "4200:4200"
+    expose:
+      - "3000"
     volumes:
       - ./client:/usr/src/app
       - /usr/src/app/node_modules

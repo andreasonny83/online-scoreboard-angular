@@ -5,6 +5,8 @@ const AWS = require('aws-sdk');
 const crypto = require('crypto');
 
 const config = require('./config.json');
+const routes = require('./routes/routes');
+
 const key = '';
 
 const dynamodb = new AWS.DynamoDB();
@@ -27,28 +29,11 @@ app.use(bodyParser.json({
   limit : config.bodyLimit
 }));
 
-app.get('/', (req, res) => {
-  res.sendStatus(200);
-});
+app.use('/api', routes);
 
-app.get('/status', (req, res) => {
-  res
-    .status(200)
-    .send({
-      name: 'online-scoreboard'
-    });
-});
-
-app.post('/register', (req, res) => {
-  // console.log(req);
-  // const email = req.email;
-  // const clearPassword = req.password;
-  // const hash = crypto.createHmac('sha512', key);
-  // hash.update(clearPassword);
-  // const hashedPass = hash.digest('hex').toString();
-
-  // console.log(hashedPass);
-  res.status(201).send('OK');
+app.use((req, res) => {
+  res.status(404)
+    .send({url: req.originalUrl + ' not found'})
 });
 
 module.exports = app;

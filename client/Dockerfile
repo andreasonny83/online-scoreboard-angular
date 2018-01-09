@@ -1,5 +1,4 @@
-# Create image based on the official Node 6 image from dockerhub
-FROM node:6.12.2
+FROM node:8.9.3
 LABEL maintainer="andreasonny83@gmail.com"
 
 ENV HOME=/usr/src/app
@@ -11,9 +10,5 @@ RUN mkdir -p $HOME
 WORKDIR $HOME
 
 # Install app dependencies
-COPY package.json $HOME
+COPY package*.json $HOME/
 RUN npm install
-
-EXPOSE 4200
-
-CMD [ "npm", "start" ]
