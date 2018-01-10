@@ -1,62 +1,26 @@
 const randomWords = require('random-words');
-const AWS = require('aws-sdk');
-AWS.config.update({region: 'us-east-1'});
+const DbHelper = require('../helpers/db-helper');
 
-// Create the DynamoDB service object
-const ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
-const TableName = 'online-scoreboard__games';
+const game = async (req, res) => {
+  const gameId = req.params && req.params.gameId;
+  const TableName = 'online-scoreboard__games';
+  const data = {'gameUID' : {S: gameId}};
+  const helper = new DbHelper();
 
-const gameAlreadyExisits = (gameUID) => {
-  var params = {
-    TableName: TableName,
-    Key: {'gameUID' : {S: gameUID}}
-  };
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    ddb.getItem(params, (err, data) => {
-      if (err) {
-        return reject(err);
-      }
-
-      resolve(!!data.Item);
-    });
-  });
-}
-
-const createGame = (gameUID, res) => {
-  const params = {
-    TableName: TableName,
-    Item: {
-      gameUID: {S: gameUID}
-    }
+  if (!gameId) {
+    res.sendStatus(404);
   }
 
-  ddb.putItem(params, (err, data) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.status(201).send(`game "${gameUID}" successfully created.`)
-    }
-  });
+  let exists;
+
+  try {
+    exists = await helper.dataExisits(TableName, data);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(500);
+  }
+
+  res.status(200).send(`gameExisits ${exists}`);
 };
 
-function newGame(req, res) {
-  let gameUID = randomWords({
-    exactly: 3,
-    join: '-'
-  });
-
-  gameAlreadyExisits(gameUID)
-    .then(gameExists => {
-      if (!!gameExists) {
-        // Generates new game ID
-        return newGame(req, res);
-      }
-
-      createGame(gameUID, res);
-    })
-    .catch(err => res.sendStatus(500));
-};
-
-module.exports = newGame;
+module.exports = game;

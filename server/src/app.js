@@ -1,15 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const AWS = require('aws-sdk');
 const crypto = require('crypto');
-
 const config = require('./config.json');
 const routes = require('./routes/routes');
 
 const key = '';
 
-const dynamodb = new AWS.DynamoDB();
 const app = express();
 
 const corsOptions = {
@@ -28,6 +25,8 @@ app.use(bodyParser.json({
   extended: false,
   limit : config.bodyLimit
 }));
+
+process.on('unhandledRejection', up => { throw up })
 
 app.use('/api', routes);
 
