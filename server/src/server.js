@@ -1,11 +1,12 @@
-const morgan = require('morgan');
+const http = require('http');
 const app = require('./app');
 const config = require('./config.json');
 const PORT = process.env.PORT || config.port;
 
-app.use(morgan('dev'));
-app.disable('x-powered-by');
+app.set('port', PORT);
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+const server = http
+  .createServer(app)
+  .listen(app.get('port'), () => {
+    console.log(`Server listening on port ${server.address().port} in ${app.get('env')} mode`);
+  });
