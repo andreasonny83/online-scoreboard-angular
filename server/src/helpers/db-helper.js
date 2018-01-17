@@ -1,14 +1,20 @@
 const AWS = require('aws-sdk');
+const config = require('../config.json');
 
 class DbHelper {
+  get gamesTable() {
+    return this.config.DDB_GAMES_TABLE;
+  }
+
   constructor() {
+    this.config = config;
     AWS.config.update({region: 'us-east-1'});
     this.ddb = new AWS.DynamoDB({apiVersion: '2012-10-08'});
   }
 
-  dataExisits(TableName, data) {
+  dataExisits(tableName, data) {
     const params = {
-      TableName: TableName,
+      TableName: tableName,
       Key: data,
     };
 
@@ -24,10 +30,10 @@ class DbHelper {
     });
   }
 
-  createData(TableName, data) {
+  createData(TableName, item) {
     const params = {
       TableName: TableName,
-      Item: data
+      Item: item
     }
 
     return new Promise((resolve, reject) => {

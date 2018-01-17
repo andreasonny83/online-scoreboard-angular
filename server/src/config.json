@@ -9,12 +9,8 @@
   "REGION": "eu-west-1",
   "BUCKET": "bucket",
   "MAX_AGE": "10",
-  "CRYPTO_BYTE_SIZE": 128,
   "DDB_TABLE": "LambdAuthUsers",
-  "IDENTITY_POOL_NAME": "LambdAuth",
-  "DEVELOPER_PROVIDER_NAME": "login.mycompany.myapp",
+  "DDB_GAMES_TABLE": "online-scoreboard__games",
   "EXTERNAL_NAME": "My Authentication",
-  "EMAIL_SOURCE": "email@example.com",
-  "VERIFICATION_PAGE": "http://bucket.s3.amazonaws.com/verify.html",
-  "RESET_PAGE": "http://bucket.s3.amazonaws.com/reset.html"
+  "EMAIL_SOURCE": "email@example.com"
 }

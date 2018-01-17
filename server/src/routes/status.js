@@ -1,7 +1,14 @@
-module.exports = (req, res) => {
-  return res
-    .status(200)
-    .send({
-      name: 'online-scoreboard'
-    });
-};
+class Status {
+  constructor(appName) {
+    this.appName = appName;
+  }
+
+  sendStatus() {
+    return {
+      name: this.appName,
+      status: 200
+    }
+  }
+}
+
+module.exports = Status;

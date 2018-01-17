@@ -21,26 +21,14 @@ describe('/api path', () => {
         url: '/api not found'
       });
   });
-
-  test('GET to /status should reply with a test page', async () => {
-    const response = await request(app).get('/api/status');
-
-    expect(response.statusCode).toBe(200);
-    expect(response.body)
-      .toEqual({
-        name: 'online-scoreboard'
-      });
-  });
 });
 
-describe('game', () => {
-  test('POST on /new should start a new game', async() => {
-    const response = await request(app).post('/api/new');
+// describe('game', () => {
+//   test('GET on /new should start a new game', async() => {
+//     const response = await request(app).get('/api/new');
 
-    expect(response.statusCode).toBe(200);
-    expect(response.body)
-    .toEqual({
-      gameId: 'xxx-xxx-xxx'
-    });
-  });
-});
+//     expect(response.statusCode).toBe(201);
+//     expect(response.text)
+//       .toMatch(/game "\w+-\w+-\w+" successfully created.$/g);
+//   });
+// });

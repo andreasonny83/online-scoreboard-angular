@@ -1,0 +1,25 @@
+<form [formGroup]="gameForm" (ngSubmit)="onSubmit()" novalidate>
+  <mat-form-field>
+    <input matInput
+           placeholder="Game name"
+           formControlName="name">
+  </mat-form-field>
+
+  <button mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="gameForm.pristine || gameForm.invalid">
+    Start
+  </button>
+
+  <button mat-raised-button
+          color="primary"
+          type="reset"
+          (click)="reset()"
+          [disabled]="gameForm.pristine">
+    Reset
+  </button>
+
+  <p>Form value: {{ gameForm.pristine | json }}</p>
+  <p>Form status: {{ gameForm.status | json }}</p>
+</form>

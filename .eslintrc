@@ -10,9 +10,12 @@
   },
   "env": {
     "node": true,
+    "es6": true,
     "jest/globals": true
   },
   "rules": {
+    "max-len": [1, 100],
+    "quotes": [2, "single"],
     "no-console": 0,
     "no-unused-vars": 1,
     "jest/no-disabled-tests": "warn",

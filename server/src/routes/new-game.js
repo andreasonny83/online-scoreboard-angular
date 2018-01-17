@@ -1,34 +1,64 @@
-const randomWords = require('random-words');
 const DbHelper = require('../helpers/db-helper');
+const GameHelper = require('../helpers/game-helper');
+const { log } = require('../helpers/utils');
 
-const newGame = async (req, res) => {
-  const TableName = 'online-scoreboard__games';
-  const helper = new DbHelper();
-  const gameUID = randomWords({
-    exactly: 3,
-    join: '-'
-  });
+class NewGame {
+  constructor() {
+    this.dbHelper = new DbHelper();
+    this.gameHelper = new GameHelper();
 
-  const data = {
-    gameUID : {S: gameUID}
-  };
-
-  let exists;
-
-  try {
-    exists = await helper.dataExisits(TableName, data);
-  } catch(err) {
-    return res.sendStatus(500);
+    this.tableName = this.dbHelper.gamesTable;
   }
 
-  if (!exists) {
-    const createGame = await helper.createData(TableName, data);
+  async createNewGame() {
+    const gameUID = this.gameHelper.randomGameUid;
 
-    return res.status(201).send(`game "${gameUID}" successfully created.`)
+    const newGame = await this._tryCreatingNewGame(gameUID);
+
+    if (!newGame) {
+      return this.createNewGame();
+    }
+
+    return newGame;
   }
 
-  // Try to generate another unique gameUID
-  return newGame(req, res);
-};
+  async _tryCreatingNewGame(gameUID) {
+    const data = {
+      gameUID : {S: gameUID}
+    };
 
-module.exports = newGame;
+    let exists;
+
+    try {
+      exists = await this.dbHelper.dataExisits(this.tableName, data);
+    } catch(err) {
+      log.info(err);
+      return this._sendError(500);
+    }
+
+    if (!exists) {
+      await this.dbHelper.createData(this.tableName, data);
+      return this._gameCreated(201, gameUID);
+    }
+
+    return false;
+  }
+
+  _gameCreated(status, gameUID) {
+    return {
+        gameId: gameUID,
+        status: status,
+        created: true
+      };
+  }
+
+  _sendError(statusCode) {
+    return {
+      error: true,
+      status: statusCode,
+      created: false
+    }
+  }
+}
+
+module.exports = NewGame;

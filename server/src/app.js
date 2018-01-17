@@ -1,11 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const crypto = require('crypto');
+const morgan = require('morgan');
 const config = require('./config.json');
-const routes = require('./routes/routes');
-
-const key = '';
+const routes = require('./routes');
+const notFound = require('./not-found');
+// const crypto = require('crypto');
 
 const app = express();
 
@@ -17,6 +17,9 @@ const corsOptions = {
   preflightContinue: false
 };
 
+app.use(morgan('dev'));
+app.disable('x-powered-by');
+
 // 3rd party middleware
 app.use(cors(corsOptions));
 
@@ -26,13 +29,12 @@ app.use(bodyParser.json({
   limit : config.bodyLimit
 }));
 
-process.on('unhandledRejection', up => { throw up })
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use('/api', routes);
+// process.on('unhandledRejection', up => { throw up })
 
-app.use((req, res) => {
-  res.status(404)
-    .send({url: req.originalUrl + ' not found'})
-});
+app
+  .use('/api', routes)
+  .use(notFound);
 
 module.exports = app;
